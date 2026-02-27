@@ -1,0 +1,61 @@
+{
+  "upgrades": [
+    {
+      "id": "structural_memory",
+      "branch": "stability",
+      "tier": 1,
+      "name": "Structural Memory",
+      "description": "+5% base hull.",
+      "cost": 45,
+      "prerequisites": []
+    },
+    {
+      "id": "entropic_resistance",
+      "branch": "stability",
+      "tier": 2,
+      "name": "Entropic Resistance",
+      "description": "Reduces entropy scaling effect by 5%.",
+      "cost": 90,
+      "prerequisites": ["structural_memory"]
+    },
+    {
+      "id": "fragment_efficiency",
+      "branch": "manipulation",
+      "tier": 1,
+      "name": "Fragment Efficiency",
+      "description": "-10% rewind cost.",
+      "cost": 45,
+      "prerequisites": []
+    },
+    {
+      "id": "controlled_collapse",
+      "branch": "manipulation",
+      "tier": 2,
+      "name": "Controlled Collapse",
+      "description": "-10% mutation severity.",
+      "cost": 90,
+      "prerequisites": ["fragment_efficiency"]
+    },
+    {
+      "id": "adaptive_targeting",
+      "branch": "adaptation",
+      "tier": 2,
+      "name": "Adaptive Targeting",
+      "description": "+5% damage vs enemy types that killed player in prior runs.",
+      "cost": 95,
+      "prerequisites": ["pattern_recognition"]
+    },
+    {
+      "id": "paradox_core",
+      "branch": "adaptation",
+      "tier": 5,
+      "name": "Paradox Core",
+      "description": "Rewind without restoring entropy; entropy keeps stacking.",
+      "cost": 320,
+      "prerequisites": ["timeline_shaping"],
+      "specialUnlock": {
+        "lifetimeBossKills": 3
+      }
+    }
+  ]
+}

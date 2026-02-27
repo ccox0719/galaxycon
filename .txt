@@ -1,0 +1,209 @@
+Redesign Ship Fitness League UI (Content-Heavy Layout Cleanup)
+PROMPT START
+
+I have a working web app called “Ship Fitness League.”
+
+The functionality is solid, but the interface feels content-heavy and cramped in the center of the screen.
+
+Do NOT change game logic.
+
+Redesign the layout for:
+
+Better visual hierarchy
+
+Improved spacing
+
+Clear primary focus
+
+Reduced cognitive load
+
+Better use of horizontal space
+
+Stronger section separation
+
+Maintain dark sci-fi aesthetic.
+
+CURRENT ISSUES TO SOLVE
+
+All content is centered and compressed.
+
+Too many bordered boxes create visual noise.
+
+Derived stats panel feels isolated.
+
+Chassis selection and loadout compete visually.
+
+No strong “primary action” emphasis.
+
+Empty space feels unintentional rather than atmospheric.
+
+DESIGN GOALS
+1. Three-Column Layout (Desktop)
+
+Left Column:
+
+Chassis selection
+
+Doctrine selection
+
+Center Column:
+
+Loadout slots (primary focus)
+
+Reactor / Defense / Weapons / Utilities
+
+Right Column:
+
+Derived stats
+
+Build summary
+
+Entropy preview (future feature ready)
+
+The loadout area must feel like the star of the page.
+
+2. Reduce Visual Noise
+
+Replace heavy borders with subtle panels
+
+Use soft glow or thin accent lines
+
+Increase padding inside panels
+
+Add section headers with micro-spacing
+
+Remove unnecessary duplicate labels
+
+3. Improve Visual Hierarchy
+
+Use:
+
+Larger font for section titles
+
+Smaller font for metadata
+
+Accent color only for:
+
+Selected chassis
+
+Selected doctrine
+
+Primary buttons
+
+Warnings (BP over cap)
+
+Everything else stays neutral.
+
+4. Make Empty Space Intentional
+
+Add subtle grid background or faint blueprint overlay
+
+Slight radial glow behind loadout panel
+
+Increase overall container max width
+
+Add vertical rhythm between sections
+
+5. Upgrade Loadout Design
+
+Instead of stacked rectangles:
+
+Group slots visually:
+
+Reactor + Defense at top
+Weapons in horizontal row
+Utilities in smaller grid
+
+Each slot should:
+
+Show empty state clearly
+
+Highlight on hover
+
+Show BP cost clearly
+
+6. Derived Stats Panel Redesign
+
+Make it look like a telemetry readout
+
+Add small bar visualizations for Hull, Shields, Heat, etc.
+
+Add color indicators (green/yellow/red thresholds)
+
+Align numbers cleanly
+
+Reduce cluttered separators
+
+7. Primary Action Emphasis
+
+The “Simulate” button should:
+
+Be larger
+
+Have stronger glow or contrast
+
+Sit visually distinct from secondary buttons
+
+Feel like a launch button
+
+Other buttons (Save, Presets) should feel secondary.
+
+LAYOUT STRUCTURE REQUEST
+
+Provide:
+
+New CSS layout structure (grid or flexbox)
+
+Updated container max width
+
+Panel style adjustments
+
+Spacing system (consistent margins/padding scale)
+
+Improved typography hierarchy
+
+Sample HTML structure adjustments (minimal)
+
+No game logic changes
+
+AESTHETIC DIRECTION
+
+Keep:
+
+Dark navy/black background
+
+Subtle stars
+
+Cyan/teal accent
+
+Minimal sci-fi glow
+
+Avoid:
+
+Overly bright neon
+
+Heavy borders
+
+Over-styled gradients
+
+Excess animation
+
+Think:
+Clean command deck.
+Professional.
+Strategic.
+Not arcade.
+
+Return:
+
+Layout explanation
+
+CSS changes
+
+Revised HTML structure example
+
+Design reasoning for key decisions
+
+Do not rewrite app logic.
+
+PROMPT END
