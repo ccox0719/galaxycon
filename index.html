@@ -1,14 +1,1231 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath fill='%2322ddff' d='M32 4 8 18v28l24 14 24-14V18z'/%3E%3C/svg%3E" />
-    <title>Ship Fitness League</title>
-    <script type="module" crossorigin src="./assets/index-wHXrJT8T.js"></script>
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
-</html>
+<!DOCTYPE html>
 
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Retirement Projection · Terminal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --surface: #111318;
+  --surface2: #181c24;
+  --border: #1e2330;
+  --border2: #252b3a;
+  --text: #d4dae8;
+  --muted: #5a6278;
+  --muted2: #7b869e;
+  --accent-green: #3de88a;
+  --accent-amber: #f5a623;
+  --accent-blue: #4d9fff;
+  --accent-violet: #a78bfa;
+  --accent-red: #f87171;
+  --accent-pink: #f472b6;
+  --mc-band: rgba(61,232,138,0.07);
+  --glow-green: rgba(61,232,138,0.15);
+  --glow-amber: rgba(245,166,35,0.15);
+}
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘DM Mono’, monospace;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+padding: 24px 20px 40px;
+display: flex;
+justify-content: center;
+}
+
+/* Noise texture overlay */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: url("“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise")’ opacity=‘0.04’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 0;
+opacity: 0.4;
+}
+
+.app {
+width: 100%;
+max-width: 1100px;
+position: relative;
+z-index: 1;
+}
+
+/* HEADER */
+.header {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+margin-bottom: 28px;
+padding-bottom: 20px;
+border-bottom: 1px solid var(–border);
+}
+
+.header-left h1 {
+font-family: ‘Fraunces’, serif;
+font-size: 28px;
+font-weight: 300;
+letter-spacing: -0.02em;
+color: #fff;
+line-height: 1;
+}
+
+.header-left h1 em {
+font-style: italic;
+color: var(–accent-green);
+}
+
+.header-sub {
+margin-top: 6px;
+font-size: 11px;
+color: var(–muted);
+letter-spacing: 0.08em;
+text-transform: uppercase;
+}
+
+.status-bar {
+display: flex;
+gap: 16px;
+align-items: center;
+font-size: 11px;
+color: var(–muted);
+}
+
+.status-dot {
+width: 7px;
+height: 7px;
+border-radius: 50%;
+background: var(–accent-green);
+animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.4; }
+}
+
+/* LAYOUT */
+.layout {
+display: grid;
+grid-template-columns: 280px 1fr;
+gap: 16px;
+align-items: start;
+}
+
+/* PANEL */
+.panel {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 8px;
+overflow: hidden;
+}
+
+.panel-header {
+padding: 10px 14px;
+border-bottom: 1px solid var(–border);
+font-size: 10px;
+letter-spacing: 0.14em;
+text-transform: uppercase;
+color: var(–muted);
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.panel-header .tag {
+background: var(–border2);
+padding: 2px 7px;
+border-radius: 3px;
+font-size: 9px;
+letter-spacing: 0.1em;
+}
+
+.panel-body {
+padding: 14px;
+}
+
+/* INPUTS */
+.input-group {
+margin-bottom: 16px;
+}
+
+.input-group:last-child { margin-bottom: 0; }
+
+.input-label {
+display: flex;
+justify-content: space-between;
+align-items: baseline;
+margin-bottom: 5px;
+font-size: 10px;
+color: var(–muted2);
+letter-spacing: 0.06em;
+text-transform: uppercase;
+}
+
+.input-value {
+color: var(–accent-green);
+font-size: 12px;
+font-weight: 500;
+font-variant-numeric: tabular-nums;
+}
+
+.slider-wrap {
+position: relative;
+}
+
+input[type=“range”] {
+-webkit-appearance: none;
+width: 100%;
+height: 3px;
+background: var(–border2);
+border-radius: 2px;
+outline: none;
+cursor: pointer;
+margin-bottom: 4px;
+}
+
+input[type=“range”]::-webkit-slider-thumb {
+-webkit-appearance: none;
+width: 14px;
+height: 14px;
+border-radius: 50%;
+background: var(–accent-green);
+cursor: pointer;
+box-shadow: 0 0 8px var(–glow-green);
+transition: box-shadow 0.15s;
+}
+
+input[type=“range”]::-webkit-slider-thumb:hover {
+box-shadow: 0 0 14px var(–glow-green);
+}
+
+input[type=“number”] {
+width: 100%;
+background: var(–surface2);
+border: 1px solid var(–border2);
+border-radius: 5px;
+color: var(–text);
+font-family: ‘DM Mono’, monospace;
+font-size: 12px;
+padding: 6px 8px;
+outline: none;
+transition: border-color 0.15s;
+}
+
+input[type=“number”]:focus {
+border-color: var(–accent-green);
+box-shadow: 0 0 0 2px var(–glow-green);
+}
+
+.divider {
+height: 1px;
+background: var(–border);
+margin: 14px 0;
+}
+
+/* Scenario legend */
+.scenario-legend {
+display: flex;
+flex-direction: column;
+gap: 6px;
+margin-bottom: 14px;
+}
+
+.legend-row {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 11px;
+color: var(–muted2);
+cursor: pointer;
+padding: 4px 6px;
+border-radius: 4px;
+transition: background 0.12s;
+user-select: none;
+}
+
+.legend-row:hover { background: var(–surface2); }
+.legend-row.hidden { opacity: 0.35; }
+
+.legend-dot {
+width: 10px;
+height: 10px;
+border-radius: 50%;
+flex-shrink: 0;
+}
+
+.legend-name { flex: 1; }
+.legend-val {
+font-size: 10px;
+color: var(–muted);
+font-variant-numeric: tabular-nums;
+}
+
+/* CHART AREA */
+.chart-panel {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 8px;
+overflow: hidden;
+}
+
+.chart-toolbar {
+padding: 10px 16px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: center;
+gap: 12px;
+flex-wrap: wrap;
+}
+
+.toolbar-label {
+font-size: 10px;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: var(–muted);
+margin-right: 4px;
+}
+
+.btn-group {
+display: flex;
+background: var(–surface2);
+border-radius: 5px;
+overflow: hidden;
+border: 1px solid var(–border2);
+}
+
+.btn-group button {
+background: none;
+border: none;
+color: var(–muted2);
+font-family: ‘DM Mono’, monospace;
+font-size: 10px;
+letter-spacing: 0.08em;
+padding: 5px 10px;
+cursor: pointer;
+transition: background 0.12s, color 0.12s;
+}
+
+.btn-group button.active {
+background: var(–accent-green);
+color: #000;
+font-weight: 500;
+}
+
+.mc-toggle {
+display: flex;
+align-items: center;
+gap: 6px;
+font-size: 10px;
+color: var(–muted2);
+cursor: pointer;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+margin-left: auto;
+}
+
+.toggle-switch {
+width: 28px;
+height: 15px;
+background: var(–border2);
+border-radius: 8px;
+position: relative;
+transition: background 0.2s;
+}
+
+.toggle-switch.on { background: var(–accent-green); }
+
+.toggle-knob {
+position: absolute;
+width: 11px;
+height: 11px;
+background: #fff;
+border-radius: 50%;
+top: 2px;
+left: 2px;
+transition: left 0.2s;
+}
+
+.toggle-switch.on .toggle-knob { left: 15px; }
+
+canvas#chart {
+display: block;
+width: 100%;
+height: 380px;
+cursor: crosshair;
+}
+
+/* TOOLTIP */
+#tooltip {
+position: fixed;
+pointer-events: none;
+background: var(–surface2);
+border: 1px solid var(–border2);
+border-radius: 6px;
+padding: 10px 12px;
+font-size: 11px;
+z-index: 100;
+display: none;
+box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+min-width: 160px;
+}
+
+#tooltip .tt-age {
+font-size: 13px;
+color: #fff;
+font-family: ‘Fraunces’, serif;
+font-weight: 300;
+margin-bottom: 8px;
+padding-bottom: 6px;
+border-bottom: 1px solid var(–border2);
+}
+
+#tooltip .tt-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 12px;
+margin-top: 4px;
+}
+
+#tooltip .tt-dot {
+width: 7px;
+height: 7px;
+border-radius: 50%;
+flex-shrink: 0;
+}
+
+#tooltip .tt-label { color: var(–muted2); flex: 1; }
+#tooltip .tt-val { font-variant-numeric: tabular-nums; }
+
+/* SUMMARY CARDS */
+.summary-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 10px;
+padding: 14px 16px;
+border-top: 1px solid var(–border);
+}
+
+.stat-card {
+padding: 10px 12px;
+background: var(–surface2);
+border-radius: 6px;
+border: 1px solid var(–border2);
+}
+
+.stat-label {
+font-size: 9px;
+text-transform: uppercase;
+letter-spacing: 0.12em;
+color: var(–muted);
+margin-bottom: 5px;
+}
+
+.stat-val {
+font-size: 16px;
+font-family: ‘Fraunces’, serif;
+font-weight: 300;
+font-variant-numeric: tabular-nums;
+}
+
+.stat-sub {
+font-size: 9px;
+color: var(–muted);
+margin-top: 2px;
+letter-spacing: 0.04em;
+}
+
+.good { color: var(–accent-green); }
+.warn { color: var(–accent-amber); }
+.danger { color: var(–accent-red); }
+
+/* MC Progress */
+#mc-progress {
+display: none;
+padding: 8px 16px;
+font-size: 10px;
+color: var(–accent-green);
+letter-spacing: 0.08em;
+border-top: 1px solid var(–border);
+background: var(–surface2);
+}
+
+/* WINDFALLS */
+.windfall-list { display: flex; flex-direction: column; gap: 6px; }
+
+.windfall-row {
+display: grid;
+grid-template-columns: 1fr 70px;
+gap: 6px;
+}
+
+/* CHECKBOX */
+.check-row {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 11px;
+color: var(–muted2);
+cursor: pointer;
+margin-bottom: 10px;
+}
+
+.check-row input[type=“checkbox”] {
+width: 14px;
+height: 14px;
+accent-color: var(–accent-green);
+cursor: pointer;
+}
+
+@media (max-width: 800px) {
+.layout {
+grid-template-columns: 1fr;
+}
+.summary-grid {
+grid-template-columns: 1fr 1fr;
+}
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-left">
+      <h1>Retirement <em>Projection</em></h1>
+      <p class="header-sub">Monte Carlo · Sequence Risk · Sustainable Withdrawal · Three Scenarios</p>
+    </div>
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      <span id="runStatus">READY</span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- LEFT PANEL -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+```
+  <!-- Ages & Core -->
+  <div class="panel">
+    <div class="panel-header">Timeline <span class="tag">AGES</span></div>
+    <div class="panel-body">
+      <div class="input-group">
+        <div class="input-label">Current Age <span class="input-value" id="v-age">43</span></div>
+        <input type="range" id="age" min="25" max="70" value="43" oninput="syncSlider(this,'v-age','',true)">
+      </div>
+      <div class="input-group">
+        <div class="input-label">Retire Age <span class="input-value" id="v-ret">52</span></div>
+        <input type="range" id="retireAge" min="40" max="80" value="52" oninput="syncSlider(this,'v-ret','',true)">
+      </div>
+      <div class="input-group">
+        <div class="input-label">End Age <span class="input-value" id="v-end">95</span></div>
+        <input type="range" id="endAge" min="70" max="105" value="95" oninput="syncSlider(this,'v-end','',true)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Portfolio -->
+  <div class="panel">
+    <div class="panel-header">Portfolio <span class="tag">$</span></div>
+    <div class="panel-body">
+      <div class="input-group">
+        <div class="input-label">Current Balance <span class="input-value" id="v-bal">$615,000</span></div>
+        <input type="range" id="balance" min="0" max="3000000" step="5000" value="615000" oninput="syncSlider(this,'v-bal','$')">
+      </div>
+      <div class="input-group">
+        <div class="input-label">Annual Contribution <span class="input-value" id="v-contrib">$24,000</span></div>
+        <input type="range" id="contrib" min="0" max="100000" step="1000" value="24000" oninput="syncSlider(this,'v-contrib','$')">
+      </div>
+      <div class="input-group">
+        <div class="input-label">Annual Withdrawal <span class="input-value" id="v-wd">$80,000</span></div>
+        <input type="range" id="withdraw" min="0" max="200000" step="1000" value="80000" oninput="syncSlider(this,'v-wd','$')">
+      </div>
+    </div>
+  </div>
+
+  <!-- Returns -->
+  <div class="panel">
+    <div class="panel-header">Returns <span class="tag">RISKY BASE</span></div>
+    <div class="panel-body">
+      <div class="input-group">
+        <div class="input-label">Working Return % <span class="input-value" id="v-wr">7.0%</span></div>
+        <input type="range" id="workReturn" min="0" max="15" step="0.1" value="7" oninput="syncSlider(this,'v-wr','%')">
+      </div>
+      <div class="input-group">
+        <div class="input-label">Retired Return % <span class="input-value" id="v-rr">5.0%</span></div>
+        <input type="range" id="retReturn" min="0" max="12" step="0.1" value="5" oninput="syncSlider(this,'v-rr','%')">
+      </div>
+      <div class="input-group">
+        <div class="input-label">MC Volatility σ% <span class="input-value" id="v-vol">12.0%</span></div>
+        <input type="range" id="mcVol" min="2" max="25" step="0.5" value="12" oninput="syncSlider(this,'v-vol','%')">
+      </div>
+      <div class="input-group">
+        <div class="input-label">Inflation % <span class="input-value" id="v-inf">2.5%</span></div>
+        <input type="range" id="inflation" min="0" max="8" step="0.1" value="2.5" oninput="syncSlider(this,'v-inf','%')">
+      </div>
+    </div>
+  </div>
+
+  <!-- Social Security -->
+  <div class="panel">
+    <div class="panel-header">Social Security + Supp</div>
+    <div class="panel-body">
+      <div class="input-group">
+        <div class="input-label">SS Amount $/yr <span class="input-value" id="v-ss">$24,000</span></div>
+        <input type="range" id="ssAmount" min="0" max="60000" step="500" value="24000" oninput="syncSlider(this,'v-ss','$')">
+      </div>
+      <div class="input-group">
+        <div class="input-label">SS Start Age <span class="input-value" id="v-ssa">67</span></div>
+        <input type="range" id="ssStartAge" min="62" max="75" value="67" oninput="syncSlider(this,'v-ssa','',true)">
+      </div>
+      <div class="divider"></div>
+      <label class="check-row">
+        <input type="checkbox" id="suppEnabled" checked>
+        <span>Supplemental Work Income</span>
+      </label>
+      <div class="input-group">
+        <div class="input-label">Work Income $/yr <span class="input-value" id="v-si">$25,000</span></div>
+        <input type="range" id="suppIncome" min="0" max="100000" step="1000" value="25000" oninput="syncSlider(this,'v-si','$')">
+      </div>
+      <div class="input-group">
+        <div class="input-label">Work Until Age <span class="input-value" id="v-sea">65</span></div>
+        <input type="range" id="suppEndAge" min="52" max="80" value="65" oninput="syncSlider(this,'v-sea','',true)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Windfalls -->
+  <div class="panel">
+    <div class="panel-header">Windfalls <span class="tag">UP TO 3</span></div>
+    <div class="panel-body">
+      <div class="windfall-list">
+        <div class="windfall-row">
+          <div>
+            <div class="input-label">Windfall 1 ($)</div>
+            <input type="number" id="w1amt" value="150000" step="5000" oninput="scheduleRun()">
+          </div>
+          <div>
+            <div class="input-label">Age</div>
+            <input type="number" id="w1age" value="44" min="20" max="110" oninput="scheduleRun()">
+          </div>
+        </div>
+        <div class="windfall-row">
+          <div>
+            <div class="input-label">Windfall 2 ($)</div>
+            <input type="number" id="w2amt" value="100000" step="5000" oninput="scheduleRun()">
+          </div>
+          <div>
+            <div class="input-label">Age</div>
+            <input type="number" id="w2age" value="60" min="20" max="110" oninput="scheduleRun()">
+          </div>
+        </div>
+        <div class="windfall-row">
+          <div>
+            <div class="input-label">Windfall 3 ($)</div>
+            <input type="number" id="w3amt" value="100000" step="5000" oninput="scheduleRun()">
+          </div>
+          <div>
+            <div class="input-label">Age</div>
+            <input type="number" id="w3age" value="65" min="20" max="110" oninput="scheduleRun()">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend/Toggles -->
+  <div class="panel">
+    <div class="panel-header">Scenarios <span class="tag">CLICK TO TOGGLE</span></div>
+    <div class="panel-body">
+      <div class="scenario-legend" id="scenarioLegend">
+        <div class="legend-row" data-key="risky" onclick="toggleLine('risky')">
+          <div class="legend-dot" style="background:#3de88a;box-shadow:0 0 6px rgba(61,232,138,0.5)"></div>
+          <div class="legend-name">Risky (base returns)</div>
+          <div class="legend-val" id="leg-risky">—</div>
+        </div>
+        <div class="legend-row" data-key="safe" onclick="toggleLine('safe')">
+          <div class="legend-dot" style="background:#f5a623;box-shadow:0 0 6px rgba(245,166,35,0.4)"></div>
+          <div class="legend-name">Safe (−2% returns)</div>
+          <div class="legend-val" id="leg-safe">—</div>
+        </div>
+        <div class="legend-row" data-key="middle" onclick="toggleLine('middle')">
+          <div class="legend-dot" style="background:#a78bfa;box-shadow:0 0 6px rgba(167,139,250,0.4)"></div>
+          <div class="legend-name">Middle (max sustain.)</div>
+          <div class="legend-val" id="leg-middle">—</div>
+        </div>
+        <div class="legend-row" data-key="mc" onclick="toggleLine('mc')">
+          <div class="legend-dot" style="background:#3de88a;opacity:0.4"></div>
+          <div class="legend-name">Monte Carlo fan</div>
+          <div class="legend-val" id="leg-mc">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- RIGHT: CHART -->
+<div class="chart-panel">
+  <div class="chart-toolbar">
+    <span class="toolbar-label">View</span>
+    <div class="btn-group">
+      <button class="active" onclick="setView('nominal',this)">NOMINAL</button>
+      <button onclick="setView('real',this)">REAL</button>
+    </div>
+    <span class="toolbar-label" style="margin-left:8px">MC Runs</span>
+    <div class="btn-group">
+      <button onclick="setMCRuns(100,this)">100</button>
+      <button class="active" onclick="setMCRuns(500,this)">500</button>
+      <button onclick="setMCRuns(1000,this)">1K</button>
+    </div>
+    <label class="mc-toggle" title="Toggle Monte Carlo simulation">
+      <span>MONTE CARLO</span>
+      <div class="toggle-switch on" id="mcSwitch" onclick="toggleMC()">
+        <div class="toggle-knob"></div>
+      </div>
+    </label>
+  </div>
+  <canvas id="chart"></canvas>
+  <div id="mc-progress"></div>
+  <div class="summary-grid" id="summaryCards"></div>
+</div>
+```
+
+  </div>
+</div>
+
+<div id="tooltip">
+  <div class="tt-age" id="tt-age">Age —</div>
+  <div id="tt-body"></div>
+</div>
+
+<script>
+// ─── State ───────────────────────────────────────────────────────────
+let lineVisible = { risky: true, safe: true, middle: true, mc: true };
+let viewMode = 'nominal';
+let mcRuns = 500;
+let mcEnabled = true;
+let results = null;
+let runTimer = null;
+let hoverAge = null;
+
+// ─── Slider sync ─────────────────────────────────────────────────────
+function syncSlider(el, labelId, prefix = '', int = false) {
+  let v = parseFloat(el.value);
+  let txt;
+  if (prefix === '$') txt = '$' + Math.round(v).toLocaleString();
+  else if (prefix === '%') txt = v.toFixed(1) + '%';
+  else txt = int ? Math.round(v).toString() : v.toFixed(1);
+  document.getElementById(labelId).textContent = txt;
+  scheduleRun();
+}
+
+function getVal(id) { return parseFloat(document.getElementById(id).value); }
+function getBool(id) { return document.getElementById(id).checked; }
+
+function scheduleRun() {
+  clearTimeout(runTimer);
+  runTimer = setTimeout(runAll, 60);
+}
+
+// ─── Scenario toggles ────────────────────────────────────────────────
+function toggleLine(key) {
+  lineVisible[key] = !lineVisible[key];
+  const row = document.querySelector(`[data-key="${key}"]`);
+  row.classList.toggle('hidden', !lineVisible[key]);
+  if (results) drawChart();
+}
+
+function setView(mode, btn) {
+  viewMode = mode;
+  document.querySelectorAll('.btn-group button').forEach(b => {
+    if (b.textContent === 'NOMINAL' || b.textContent === 'REAL') b.classList.remove('active');
+  });
+  btn.classList.add('active');
+  if (results) drawChart();
+}
+
+function setMCRuns(n, btn) {
+  mcRuns = n;
+  document.querySelectorAll('.btn-group button').forEach(b => {
+    if (['100','500','1K'].includes(b.textContent)) b.classList.remove('active');
+  });
+  btn.classList.add('active');
+  if (results) runAll();
+}
+
+function toggleMC() {
+  mcEnabled = !mcEnabled;
+  const sw = document.getElementById('mcSwitch');
+  sw.classList.toggle('on', mcEnabled);
+  if (results) drawChart();
+}
+
+// ─── Core simulation ─────────────────────────────────────────────────
+function simulate({ startAge, retireAge, endAge, startBal, contrib, withdraw,
+                    workR, retR, windfalls, suppEnabled, suppIncome, suppEndAge,
+                    ssAmount, ssStartAge, inflation }) {
+  const years = [], values = [];
+  let bal = startBal;
+  let depletionAge = null;
+  const infl = inflation / 100;
+
+  for (let age = startAge; age <= endAge; age++) {
+    years.push(age);
+    values.push(bal);
+    if (depletionAge === null && bal <= 0) depletionAge = age;
+
+    const working = age < retireAge;
+    const rate = working ? workR : retR;
+    const add = working ? contrib : 0;
+    const suppI = (suppEnabled && !working && age <= suppEndAge) ? suppIncome : 0;
+    const ss = (!working && age >= ssStartAge) ? ssAmount : 0;
+    const totalOffset = suppI + ss;
+    const netWd = working ? 0 : Math.max(withdraw - totalOffset, 0);
+    let wf = windfalls.filter(w => w.age === age).reduce((s, w) => s + w.amount, 0);
+
+    bal = Math.max(bal + add - netWd + wf + bal * rate, 0);
+  }
+
+  if (depletionAge === null && values[values.length - 1] === 0) depletionAge = endAge;
+  return { years, values, depletionAge };
+}
+
+function findMiddle({ baseParams, workR_safe, retR_safe, maxWd }) {
+  let lo = 0, hi = maxWd, best = null, bestWd = 0;
+  for (let i = 0; i < 32; i++) {
+    const mid = (lo + hi) / 2;
+    const s = simulate({ ...baseParams, withdraw: mid, workR: workR_safe, retR: retR_safe });
+    if (s.depletionAge === null) { best = s; bestWd = mid; lo = mid; }
+    else hi = mid;
+  }
+  if (!best) { best = simulate({ ...baseParams, withdraw: 0, workR: workR_safe, retR: retR_safe }); bestWd = 0; }
+  return { scenario: best, withdraw: bestWd };
+}
+
+// ─── Monte Carlo ──────────────────────────────────────────────────────
+function boxMuller() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function runMonteCarlo(baseParams, workR, retR, vol, n) {
+  const paths = [];
+  let depleted = 0;
+  const volR = vol / 100;
+
+  for (let i = 0; i < n; i++) {
+    const { startAge, retireAge, endAge, startBal, contrib, withdraw,
+            windfalls, suppEnabled, suppIncome, suppEndAge, ssAmount, ssStartAge } = baseParams;
+    const years = [], values = [];
+    let bal = startBal;
+    let dead = false;
+
+    for (let age = startAge; age <= endAge; age++) {
+      years.push(age);
+      values.push(bal);
+      if (bal <= 0 && !dead) { dead = true; }
+
+      const working = age < retireAge;
+      const baseR = working ? workR : retR;
+      const annualR = baseR + boxMuller() * volR;
+      const add = working ? contrib : 0;
+      const suppI = (suppEnabled && !working && age <= suppEndAge) ? suppIncome : 0;
+      const ss = (!working && age >= ssStartAge) ? ssAmount : 0;
+      const netWd = working ? 0 : Math.max(withdraw - suppI - ss, 0);
+      let wf = windfalls.filter(w => w.age === age).reduce((s, w) => s + w.amount, 0);
+
+      bal = Math.max(bal + add - netWd + wf + bal * annualR, 0);
+    }
+
+    if (dead) depleted++;
+    paths.push(values);
+  }
+
+  // Compute percentile bands per age index
+  const len = paths[0].length;
+  const p10 = [], p25 = [], p50 = [], p75 = [], p90 = [];
+  for (let i = 0; i < len; i++) {
+    const col = paths.map(p => p[i]).sort((a, b) => a - b);
+    p10.push(col[Math.floor(n * 0.10)]);
+    p25.push(col[Math.floor(n * 0.25)]);
+    p50.push(col[Math.floor(n * 0.50)]);
+    p75.push(col[Math.floor(n * 0.75)]);
+    p90.push(col[Math.floor(n * 0.90)]);
+  }
+
+  return { p10, p25, p50, p75, p90, paths, successRate: ((n - depleted) / n * 100).toFixed(1) };
+}
+
+// ─── Main run ─────────────────────────────────────────────────────────
+function runAll() {
+  const age = getVal('age'), retireAge = getVal('retireAge'), endAge = getVal('endAge');
+  const startBal = getVal('balance'), contrib = getVal('contrib'), withdraw = getVal('withdraw');
+  const workR = getVal('workReturn') / 100, retR = getVal('retReturn') / 100;
+  const vol = getVal('mcVol'), inflation = getVal('inflation');
+  const ssAmount = getVal('ssAmount'), ssStartAge = getVal('ssStartAge');
+  const suppEnabled = getBool('suppEnabled'), suppIncome = getVal('suppIncome'), suppEndAge = getVal('suppEndAge');
+
+  const windfalls = [
+    { amount: getVal('w1amt'), age: getVal('w1age') },
+    { amount: getVal('w2amt'), age: getVal('w2age') },
+    { amount: getVal('w3amt'), age: getVal('w3age') }
+  ].filter(w => w.amount > 0);
+
+  const workR_safe = Math.max(workR - 0.02, 0);
+  const retR_safe = Math.max(retR - 0.02, 0);
+
+  const baseParams = {
+    startAge: age, retireAge, endAge, startBal, contrib, withdraw,
+    windfalls, suppEnabled, suppIncome, suppEndAge, ssAmount, ssStartAge, inflation
+  };
+
+  const risky = simulate({ ...baseParams, workR, retR });
+  const safe = simulate({ ...baseParams, workR: workR_safe, retR: retR_safe });
+  const { scenario: middle, withdraw: midWd } = findMiddle({ baseParams, workR_safe, retR_safe, maxWd: withdraw });
+
+  let mc = null;
+  if (mcEnabled) {
+    mc = runMonteCarlo(baseParams, workR, retR, vol, mcRuns);
+  }
+
+  results = { risky, safe, middle, mc, params: baseParams, midWd, workR, retR, workR_safe, retR_safe };
+
+  // Deflate if real view
+  if (viewMode === 'real') {
+    const infl = inflation / 100;
+    const deflate = (vals) => vals.map((v, i) => v / Math.pow(1 + infl, i));
+    risky.displayValues = deflate(risky.values);
+    safe.displayValues = deflate(safe.values);
+    middle.displayValues = deflate(middle.values);
+    if (mc) {
+      mc.p10d = deflate(mc.p10); mc.p25d = deflate(mc.p25);
+      mc.p50d = deflate(mc.p50); mc.p75d = deflate(mc.p75);
+      mc.p90d = deflate(mc.p90);
+    }
+  } else {
+    risky.displayValues = risky.values;
+    safe.displayValues = safe.values;
+    middle.displayValues = middle.values;
+    if (mc) {
+      mc.p10d = mc.p10; mc.p25d = mc.p25; mc.p50d = mc.p50;
+      mc.p75d = mc.p75; mc.p90d = mc.p90;
+    }
+  }
+
+  drawChart();
+  updateSummary(midWd, mc);
+}
+
+// ─── Draw chart ───────────────────────────────────────────────────────
+function drawChart() {
+  if (!results) return;
+  const { risky, safe, middle, mc, params } = results;
+  const { startAge, retireAge, endAge } = params;
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.clientWidth, H = canvas.clientHeight;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  const PAD = { top: 18, right: 18, bottom: 36, left: 72 };
+  const cw = W - PAD.left - PAD.right;
+  const ch = H - PAD.top - PAD.bottom;
+
+  // Gather all values for scale
+  const allV = [
+    ...(lineVisible.risky ? risky.displayValues : []),
+    ...(lineVisible.safe ? safe.displayValues : []),
+    ...(lineVisible.middle ? middle.displayValues : []),
+    ...(lineVisible.mc && mc ? [...mc.p90d] : [])
+  ].filter(v => isFinite(v) && v >= 0);
+
+  const maxV = Math.max(...allV, 1);
+
+  function xAge(a) { return PAD.left + ((a - startAge) / (endAge - startAge)) * cw; }
+  function yVal(v) { return PAD.top + (1 - Math.min(v, maxV) / maxV) * ch; }
+
+  // Gridlines
+  const gridLines = 5;
+  ctx.strokeStyle = '#1e2330';
+  ctx.lineWidth = 1;
+  ctx.font = `10px 'DM Mono', monospace`;
+  ctx.fillStyle = '#5a6278';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  for (let i = 0; i <= gridLines; i++) {
+    const v = (maxV / gridLines) * i;
+    const y = yVal(v);
+    ctx.beginPath();
+    ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cw, y);
+    ctx.stroke();
+    ctx.fillText(fmtShort(v), PAD.left - 8, y);
+  }
+
+  // Retirement zone fill
+  const rx = xAge(retireAge), ex = xAge(endAge);
+  ctx.fillStyle = 'rgba(255,255,255,0.02)';
+  ctx.fillRect(rx, PAD.top, ex - rx, ch);
+
+  // X labels
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = '#5a6278';
+  for (let a = startAge; a <= endAge; a += 5) {
+    const x = xAge(a);
+    ctx.fillText(a, x, PAD.top + ch + 8);
+    ctx.strokeStyle = '#1a1e28';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(x, PAD.top); ctx.lineTo(x, PAD.top + ch); ctx.stroke();
+  }
+
+  // Retirement line
+  ctx.strokeStyle = '#4d9fff';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(rx, PAD.top); ctx.lineTo(rx, PAD.top + ch); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#4d9fff';
+  ctx.textAlign = 'center';
+  ctx.fillText('RETIRE', rx, PAD.top + 4);
+
+  // Monte Carlo fan
+  if (lineVisible.mc && mc) {
+    // p10–p90 band
+    ctx.beginPath();
+    mc.p10d.forEach((v, i) => { const x = xAge(startAge + i), y = yVal(v); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+    mc.p90d.slice().reverse().forEach((v, i) => { const x = xAge(endAge - i), y = yVal(v); ctx.lineTo(x, y); });
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(61,232,138,0.05)';
+    ctx.fill();
+
+    // p25–p75 band
+    ctx.beginPath();
+    mc.p25d.forEach((v, i) => { const x = xAge(startAge + i), y = yVal(v); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+    mc.p75d.slice().reverse().forEach((v, i) => { const x = xAge(endAge - i), y = yVal(v); ctx.lineTo(x, y); });
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(61,232,138,0.09)';
+    ctx.fill();
+
+    // Median line
+    ctx.strokeStyle = 'rgba(61,232,138,0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    mc.p50d.forEach((v, i) => { const x = xAge(startAge + i), y = yVal(v); i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Main scenario lines
+  function drawLine(scenario, color, width = 2) {
+    if (!scenario.displayValues) return;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    scenario.displayValues.forEach((v, i) => {
+      const x = xAge(scenario.years[i]), y = yVal(v);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  if (lineVisible.safe) drawLine(safe, '#f5a623', 2);
+  if (lineVisible.middle) drawLine(middle, '#a78bfa', 2);
+  if (lineVisible.risky) drawLine(risky, '#3de88a', 2.5);
+
+  // Depletion markers
+  function deplMarker(scenario, color) {
+    if (!scenario.depletionAge) return;
+    const da = scenario.depletionAge;
+    if (da < startAge || da > endAge) return;
+    const idx = scenario.years.indexOf(da);
+    if (idx === -1) return;
+    const x = xAge(da), y = yVal(scenario.displayValues[idx]);
+    ctx.fillStyle = color;
+    ctx.shadowColor = color; ctx.shadowBlur = 10;
+    ctx.beginPath(); ctx.arc(x, y + 1, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#ef4444';
+    ctx.font = `9px 'DM Mono', monospace`;
+    ctx.textAlign = 'left';
+    ctx.fillText('✕ ' + da, x + 7, y - 3);
+  }
+
+  if (lineVisible.risky) deplMarker(risky, '#3de88a');
+  if (lineVisible.safe) deplMarker(safe, '#f5a623');
+  if (lineVisible.middle) deplMarker(middle, '#a78bfa');
+
+  // Hover crosshair
+  if (hoverAge !== null && hoverAge >= startAge && hoverAge <= endAge) {
+    const hx = xAge(hoverAge);
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(hx, PAD.top); ctx.lineTo(hx, PAD.top + ch); ctx.stroke();
+
+    const idx = risky.years.indexOf(Math.round(hoverAge));
+    if (idx !== -1) {
+      const dots = [
+        { v: risky.displayValues[idx], color: '#3de88a', vis: lineVisible.risky },
+        { v: safe.displayValues[idx], color: '#f5a623', vis: lineVisible.safe },
+        { v: middle.displayValues[idx], color: '#a78bfa', vis: lineVisible.middle }
+      ];
+      dots.forEach(d => {
+        if (!d.vis) return;
+        ctx.fillStyle = d.color;
+        ctx.shadowColor = d.color; ctx.shadowBlur = 8;
+        ctx.beginPath(); ctx.arc(hx, yVal(d.v), 4, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+    }
+  }
+
+  // Update legend end values
+  const last = results.risky.years.length - 1;
+  document.getElementById('leg-risky').textContent = fmtShort(risky.displayValues[last]);
+  document.getElementById('leg-safe').textContent = fmtShort(safe.displayValues[last]);
+  document.getElementById('leg-middle').textContent = fmtShort(middle.displayValues[last]);
+  document.getElementById('leg-mc').textContent = mc ? `${mc.successRate}% success` : 'OFF';
+}
+
+// ─── Tooltip ─────────────────────────────────────────────────────────
+const chart = document.getElementById('chart');
+const tooltip = document.getElementById('tooltip');
+
+chart.addEventListener('mousemove', (e) => {
+  if (!results) return;
+  const rect = chart.getBoundingClientRect();
+  const PAD = { left: 72, right: 18, top: 18, bottom: 36 };
+  const cw = rect.width - PAD.left - PAD.right;
+  const mx = e.clientX - rect.left;
+  if (mx < PAD.left || mx > rect.width - PAD.right) { hideTooltip(); return; }
+
+  const { startAge, endAge } = results.params;
+  const t = (mx - PAD.left) / cw;
+  const age = Math.round(startAge + t * (endAge - startAge));
+  hoverAge = age;
+  drawChart();
+
+  const idx = results.risky.years.indexOf(age);
+  if (idx === -1) { hideTooltip(); return; }
+
+  const ttAge = document.getElementById('tt-age');
+  ttAge.textContent = `Age ${age}`;
+  const body = document.getElementById('tt-body');
+
+  const rows = [
+    { label: 'Risky', val: results.risky.displayValues[idx], color: '#3de88a', vis: lineVisible.risky },
+    { label: 'Safe', val: results.safe.displayValues[idx], color: '#f5a623', vis: lineVisible.safe },
+    { label: 'Middle', val: results.middle.displayValues[idx], color: '#a78bfa', vis: lineVisible.middle }
+  ];
+
+  if (results.mc && lineVisible.mc) {
+    rows.push({ label: 'MC p50', val: results.mc.p50d[idx], color: '#3de88a', vis: true, op: 0.5 });
+    rows.push({ label: 'MC p10', val: results.mc.p10d[idx], color: '#f87171', vis: true, op: 0.5 });
+  }
+
+  body.innerHTML = rows.filter(r => r.vis).map(r =>
+    `<div class="tt-row">
+      <div class="tt-dot" style="background:${r.color};opacity:${r.op||1}"></div>
+      <div class="tt-label">${r.label}</div>
+      <div class="tt-val" style="color:${r.val > 0 ? '#d4dae8' : '#f87171'}">${fmtShort(r.val)}</div>
+    </div>`
+  ).join('');
+
+  tooltip.style.display = 'block';
+  const tx = e.clientX + 16;
+  const ty = e.clientY - 20;
+  tooltip.style.left = Math.min(tx, window.innerWidth - 200) + 'px';
+  tooltip.style.top = ty + 'px';
+});
+
+chart.addEventListener('mouseleave', () => {
+  hideTooltip();
+  hoverAge = null;
+  if (results) drawChart();
+});
+
+function hideTooltip() {
+  tooltip.style.display = 'none';
+}
+
+// ─── Summary cards ────────────────────────────────────────────────────
+function updateSummary(midWd, mc) {
+  if (!results) return;
+  const { risky, safe, endAge } = results;
+  const el = document.getElementById('summaryCards');
+
+  const riskyEnd = risky.values[risky.values.length - 1];
+  const safeEnd = safe.values[safe.values.length - 1];
+
+  const riskyOk = !risky.depletionAge || risky.depletionAge > endAge;
+  const safeOk = !safe.depletionAge || safe.depletionAge > endAge;
+
+  const mcSuccess = mc ? `${mc.successRate}%` : '—';
+  const mcClass = mc ? (parseFloat(mc.successRate) >= 90 ? 'good' : parseFloat(mc.successRate) >= 70 ? 'warn' : 'danger') : '';
+
+  el.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Risky Plan @ ${endAge}</div>
+      <div class="stat-val ${riskyOk ? 'good' : 'danger'}">${riskyOk ? fmtShort(riskyEnd) : 'Depleted'}</div>
+      <div class="stat-sub">${riskyOk ? 'survives to end' : `runs out age ${risky.depletionAge}`}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Safe Plan @ ${endAge}</div>
+      <div class="stat-val ${safeOk ? 'good' : 'warn'}">${safeOk ? fmtShort(safeEnd) : 'Depleted'}</div>
+      <div class="stat-sub">${safeOk ? 'survives to end' : `runs out age ${safe.depletionAge}`}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Max Sustain. WD</div>
+      <div class="stat-val good">${fmtShort(midWd)}</div>
+      <div class="stat-sub">under safe returns/yr</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">MC Success Rate</div>
+      <div class="stat-val ${mcClass}">${mcSuccess}</div>
+      <div class="stat-sub">${mc ? `of ${mcRuns} simulations` : 'monte carlo off'}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">MC Median @ ${endAge}</div>
+      <div class="stat-val">${mc ? fmtShort(mc.p50[mc.p50.length-1]) : '—'}</div>
+      <div class="stat-sub">50th percentile</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">MC 10th %ile @ ${endAge}</div>
+      <div class="stat-val warn">${mc ? fmtShort(mc.p10[mc.p10.length-1]) : '—'}</div>
+      <div class="stat-sub">worst-case band</div>
+    </div>
+  `;
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────
+function fmtShort(n) {
+  if (!isFinite(n) || n < 0) return '$0';
+  if (n >= 1e6) return '$' + (n / 1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '$' + (n / 1e3).toFixed(0) + 'K';
+  return '$' + Math.round(n).toLocaleString();
+}
+
+// ─── Init ─────────────────────────────────────────────────────────────
+window.addEventListener('resize', () => { if (results) drawChart(); });
+runAll();
+</script>
+
+</body>
+</html>
